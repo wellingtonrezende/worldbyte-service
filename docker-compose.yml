@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: worldbyte-service-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: worldbyte_service
+      POSTGRES_USER: worldbyte
+      POSTGRES_PASSWORD: worldbyte_dev
+    ports:
+      - "5433:5432"
+    volumes:
+      - worldbyte_service_pgdata:/var/lib/postgresql/data
+
+volumes:
+  worldbyte_service_pgdata:

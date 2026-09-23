@@ -1,0 +1,15 @@
+{
+  "name": "worldbyte-service",
+  "private": true,
+  "workspaces": ["frontend", "backend"],
+  "scripts": {
+    "dev:frontend": "npm --prefix frontend run dev",
+    "dev:backend": "npm --prefix backend run dev",
+    "build": "npm run build:frontend && npm run build:backend",
+    "build:frontend": "npm --prefix frontend run build",
+    "build:backend": "npm --prefix backend run build",
+    "prisma:generate": "npm --prefix backend run prisma:generate",
+    "prisma:migrate": "npm --prefix backend run prisma:migrate",
+    "prisma:studio": "npm --prefix backend run prisma:studio"
+  }
+}
