@@ -58,7 +58,8 @@ export const ModelName = {
   Plan: 'Plan',
   PlanFeature: 'PlanFeature',
   Subscription: 'Subscription',
-  AuditLog: 'AuditLog'
+  AuditLog: 'AuditLog',
+  Customer: 'Customer'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -211,6 +212,32 @@ export const AuditLogScalarFieldEnum = {
 } as const
 
 export type AuditLogScalarFieldEnum = (typeof AuditLogScalarFieldEnum)[keyof typeof AuditLogScalarFieldEnum]
+
+
+export const CustomerScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  type: 'type',
+  name: 'name',
+  cpf: 'cpf',
+  cnpj: 'cnpj',
+  phone: 'phone',
+  whatsapp: 'whatsapp',
+  email: 'email',
+  cep: 'cep',
+  address: 'address',
+  number: 'number',
+  complement: 'complement',
+  neighborhood: 'neighborhood',
+  city: 'city',
+  state: 'state',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type CustomerScalarFieldEnum = (typeof CustomerScalarFieldEnum)[keyof typeof CustomerScalarFieldEnum]
 
 
 export const SortOrder = {

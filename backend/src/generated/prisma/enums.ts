@@ -44,3 +44,11 @@ export const SubscriptionStatus = {
 } as const
 
 export type SubscriptionStatus = (typeof SubscriptionStatus)[keyof typeof SubscriptionStatus]
+
+
+export const CustomerType = {
+  INDIVIDUAL: 'INDIVIDUAL',
+  BUSINESS: 'BUSINESS'
+} as const
+
+export type CustomerType = (typeof CustomerType)[keyof typeof CustomerType]

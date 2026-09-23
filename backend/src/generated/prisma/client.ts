@@ -81,3 +81,8 @@ export type Subscription = Prisma.SubscriptionModel
  * 
  */
 export type AuditLog = Prisma.AuditLogModel
+/**
+ * Model Customer
+ * 
+ */
+export type Customer = Prisma.CustomerModel

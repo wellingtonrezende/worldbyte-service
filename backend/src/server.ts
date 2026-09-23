@@ -8,6 +8,7 @@ import { env } from './config/env.js';
 import { prisma } from './lib/prisma.js';
 import { authRoutes } from './modules/auth/auth.routes.js';
 import { organizationRoutes } from "./modules/organizations/organization.routes.js";
+import { customerRoutes } from "./modules/customers/customer.routes.js";
 
 
 const app = Fastify({ logger: true });
@@ -19,7 +20,19 @@ app.decorate('config', {
 
 await app.register(cors, {
   origin: env.FRONTEND_ORIGIN,
-  credentials: true
+  credentials: true,
+  methods: [
+    "GET",
+    "POST",
+    "PUT",
+    "PATCH",
+    "DELETE",
+    "OPTIONS"
+  ],
+  allowedHeaders: [
+    "Content-Type",
+    "Authorization"
+  ]
 });
 
 await app.register(helmet);
@@ -41,6 +54,10 @@ await app.register(authRoutes, { prefix: '/api/auth' });
 
 await app.register(organizationRoutes, {
   prefix: "/api/organizations",
+});
+
+await app.register(customerRoutes, {
+  prefix: "/api/customers",
 });
 
 app.setErrorHandler((error, _request, reply) => {
