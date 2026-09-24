@@ -348,3 +348,217 @@ textarea {
     width: 100%;
   }
 }
+
+.quote-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.quote-card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 18px;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.quote-card:hover {
+  transform: translateY(-2px);
+  border-color: #cbd5e1;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+}
+
+.quote-card-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.quote-card-top > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.quote-title {
+  color: #64748b;
+  font-size: 14px;
+}
+
+.quote-info {
+  margin-top: 16px;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+}
+
+.quote-status {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.quote-status-draft {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.quote-status-sent {
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.quote-status-approved {
+  background: #ecfdf3;
+  color: #067647;
+}
+
+.quote-status-rejected,
+.quote-status-canceled {
+  background: #fef3f2;
+  color: #b42318;
+}
+
+.quote-status-expired {
+  background: #fffaeb;
+  color: #b54708;
+}
+
+@media (max-width: 640px) {
+  .quote-card-top,
+  .quote-info {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+.quote-section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.quote-items {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.quote-item-row {
+  display: grid;
+  grid-template-columns: minmax(220px, 2fr) 120px 150px 130px auto;
+  gap: 12px;
+  align-items: end;
+  padding: 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+}
+
+.quote-item-total {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 66px;
+  justify-content: flex-end;
+}
+
+.quote-item-total span {
+  color: #64748b;
+  font-size: 13px;
+}
+
+.quote-remove-button {
+  width: auto;
+  background: transparent;
+  color: #b42318;
+  border: 1px solid #fecaca;
+  margin: 0;
+}
+
+.quote-remove-button:hover {
+  background: #fef2f2;
+}
+
+.quote-remove-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.secondary-button {
+  width: auto;
+  margin: 0;
+  background: #fff;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+}
+
+.quote-summary {
+  margin-top: 20px;
+  margin-left: auto;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.quote-summary > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.quote-summary-total {
+  border-top: 1px solid #e5e7eb;
+  padding-top: 12px;
+  font-size: 18px;
+}
+
+@media (max-width: 900px) {
+  .quote-item-row {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .quote-item-description {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 640px) {
+  .quote-section-heading {
+    flex-direction: column;
+  }
+
+  .quote-section-heading .secondary-button {
+    width: 100%;
+  }
+
+  .quote-item-row {
+    grid-template-columns: 1fr;
+  }
+
+  .quote-item-description {
+    grid-column: auto;
+  }
+
+  .quote-remove-button {
+    width: 100%;
+  }
+
+  .quote-summary {
+    max-width: none;
+  }
+}

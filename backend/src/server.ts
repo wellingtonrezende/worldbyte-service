@@ -1,21 +1,38 @@
-import Fastify from 'fastify';
-import cors from '@fastify/cors';
-import helmet from '@fastify/helmet';
-import rateLimit from '@fastify/rate-limit';
-import jwt from '@fastify/jwt';
-import { ZodError } from 'zod';
-import { env } from './config/env.js';
-import { prisma } from './lib/prisma.js';
-import { authRoutes } from './modules/auth/auth.routes.js';
+import Fastify from "fastify";
+import cors from "@fastify/cors";
+import helmet from "@fastify/helmet";
+import rateLimit from "@fastify/rate-limit";
+import jwt from "@fastify/jwt";
+import { ZodError } from "zod";
+
+import { env } from "./config/env.js";
+import { prisma } from "./lib/prisma.js";
+
+import { authRoutes } from "./modules/auth/auth.routes.js";
 import { organizationRoutes } from "./modules/organizations/organization.routes.js";
 import { customerRoutes } from "./modules/customers/customer.routes.js";
+import { quoteRoutes } from "./modules/quotes/quote.routes.js";
 
+declare module "fastify" {
+  interface FastifyInstance {
+    config: {
+      JWT_ACCESS_SECRET: string;
+      JWT_REFRESH_SECRET: string;
+    };
+  }
+}
 
-const app = Fastify({ logger: true });
+const app = Fastify({
+  logger: true,
+});
 
-app.decorate('prisma', prisma);
-app.decorate('config', {
-  JWT_REFRESH_SECRET: env.JWT_REFRESH_SECRET
+app.decorate("config", {
+  JWT_ACCESS_SECRET: env.JWT_ACCESS_SECRET,
+  JWT_REFRESH_SECRET: env.JWT_REFRESH_SECRET,
+});
+
+await app.register(jwt, {
+  secret: env.JWT_ACCESS_SECRET,
 });
 
 await app.register(cors, {
@@ -27,30 +44,31 @@ await app.register(cors, {
     "PUT",
     "PATCH",
     "DELETE",
-    "OPTIONS"
+    "OPTIONS",
   ],
   allowedHeaders: [
     "Content-Type",
-    "Authorization"
-  ]
+    "Authorization",
+  ],
 });
 
 await app.register(helmet);
+
 await app.register(rateLimit, {
   max: 100,
-  timeWindow: '1 minute'
+  timeWindow: "1 minute",
 });
 
-await app.register(jwt, {
-  secret: env.JWT_ACCESS_SECRET
+app.get("/health", async () => {
+  return {
+    status: "ok",
+    service: "worldbyte-service-api",
+  };
 });
 
-app.get('/health', async () => ({
-  status: 'ok',
-  service: 'worldbyte-service-api'
-}));
-
-await app.register(authRoutes, { prefix: '/api/auth' });
+await app.register(authRoutes, {
+  prefix: "/api/auth",
+});
 
 await app.register(organizationRoutes, {
   prefix: "/api/organizations",
@@ -60,39 +78,48 @@ await app.register(customerRoutes, {
   prefix: "/api/customers",
 });
 
-app.setErrorHandler((error, _request, reply) => {
-  if (error instanceof ZodError) {
-    return reply.code(400).send({
-      message: 'Dados inválidos.',
-      issues: error.issues.map(issue => ({
-        field: issue.path.join('.'),
-        message: issue.message
-      }))
-    });
-  }
-
-  app.log.error(error);
-  return reply.code(500).send({
-    message: 'Ocorreu um erro interno. Tente novamente.'
-  });
+await app.register(quoteRoutes, {
+  prefix: "/api/quotes",
 });
 
-const start = async () => {
+app.setErrorHandler(
+  async (error, request, reply) => {
+    if (error instanceof ZodError) {
+      return reply.code(400).send({
+        message: "Dados inválidos.",
+        issues: error.issues,
+      });
+    }
+
+    request.log.error(error);
+
+    return reply.code(500).send({
+      message: "Erro interno do servidor.",
+    });
+  }
+);
+
+app.addHook("onClose", async () => {
+  await prisma.$disconnect();
+});
+
+async function start() {
   try {
-    await app.listen({ port: env.PORT, host: '0.0.0.0' });
+    await app.listen({
+      port: env.PORT,
+      host: "0.0.0.0",
+    });
+
+    console.log(
+      `WorldByte Service API rodando na porta ${env.PORT}`
+    );
   } catch (error) {
     app.log.error(error);
+
+    await prisma.$disconnect();
+
     process.exit(1);
   }
-};
-
-async function shutdown() {
-  await prisma.$disconnect();
-  await app.close();
-  process.exit(0);
 }
-
-process.on('SIGINT', shutdown);
-process.on('SIGTERM', shutdown);
 
 start();

@@ -86,3 +86,13 @@ export type AuditLog = Prisma.AuditLogModel
  * 
  */
 export type Customer = Prisma.CustomerModel
+/**
+ * Model Quote
+ * 
+ */
+export type Quote = Prisma.QuoteModel
+/**
+ * Model QuoteItem
+ * 
+ */
+export type QuoteItem = Prisma.QuoteItemModel

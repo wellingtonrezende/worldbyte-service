@@ -79,7 +79,7 @@ model Organization {
   subscriptions   Subscription[]
   auditLogs       AuditLog[]
   customers Customer[]
-
+  quotes Quote[]
 }
 
 model OrganizationMember {
@@ -211,6 +211,8 @@ model Customer {
   updatedAt      DateTime     @updatedAt
   deletedAt      DateTime?
 
+  quotes Quote[]
+
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
   @@index([organizationId])
@@ -219,4 +221,67 @@ model Customer {
   @@index([organizationId, cpf])
   @@index([organizationId, cnpj])
 
+}
+
+enum QuoteStatus {
+  DRAFT
+  SENT
+  APPROVED
+  REJECTED
+  EXPIRED
+  CANCELED
+}
+
+model Quote {
+  id             String      @id @default(uuid())
+  organizationId String
+  customerId     String
+
+  number         String
+  title          String
+  description    String?
+
+  status         QuoteStatus @default(DRAFT)
+
+  subtotal       Decimal     @db.Decimal(12, 2)
+  discount       Decimal     @default(0) @db.Decimal(12, 2)
+  total          Decimal     @db.Decimal(12, 2)
+
+  validUntil     DateTime?
+  notes          String?
+  terms          String?
+
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  deletedAt      DateTime?
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  customer       Customer     @relation(fields: [customerId], references: [id], onDelete: Restrict)
+
+  items          QuoteItem[]
+
+  @@unique([organizationId, number])
+  @@index([organizationId])
+  @@index([organizationId, customerId])
+  @@index([organizationId, status])
+  @@index([organizationId, createdAt])
+}
+
+model QuoteItem {
+  id          String   @id @default(uuid())
+  quoteId     String
+
+  description String
+  quantity    Decimal  @db.Decimal(12, 3)
+  unitPrice   Decimal  @db.Decimal(12, 2)
+  total       Decimal  @db.Decimal(12, 2)
+
+  sortOrder   Int      @default(0)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  quote       Quote    @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+
+  @@index([quoteId])
 }
